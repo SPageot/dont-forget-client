@@ -4,15 +4,15 @@ import { styles } from '@/styles/background';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import UserInput from '@/components/UserInput';
-import { ListItems } from '@/types/list';
 import ItemContainer from '@/components/ItemContainer';
 import axios from 'axios';
 import { BASE_API } from '@/util/baseApi';
 import { useStore } from '@/store/store';
+import { Toast } from 'toastify-react-native';
 
 export default function List() {
   const [listItem, setListItem] = useState('');
-  const [list, setList] = useState<ListItems[]>([]);
+  const [list, setList] = useState<string[]>([]);
   const [visible, setIsVisible] = useState(false);
   const [listTitle, setListTitle] = useState('');
   const user = useStore((state: any) => state.user);
@@ -23,10 +23,11 @@ export default function List() {
 
   const addToList = () => {
     if (listItem) {
-      setList((prev) => [
-        ...prev,
-        { id: String(Number(list.length + 1)), listItem },
-      ]);
+      if (list.includes(listItem)) {
+        Toast.error('Item already in List', 'bottom');
+        return;
+      }
+      setList((prev) => [...prev, listItem]);
       setListItem('');
     }
   };
@@ -41,7 +42,7 @@ export default function List() {
         list: {
           userId: user._id,
           title: listTitle,
-          listItems: list.map((item) => item.listItem),
+          listItems: list,
         },
       });
 
@@ -49,6 +50,7 @@ export default function List() {
         setList([]);
         setIsVisible(false);
         setListTitle('');
+        Toast.success('List Successfully Saved');
       }
     } catch (err) {
       console.log(err);
@@ -83,17 +85,15 @@ export default function List() {
             data={list}
             renderItem={({ item }) => (
               <ItemContainer
-                listItem={item.listItem}
+                listItem={item}
                 onRemovePress={() =>
                   setList((prev) =>
-                    prev.filter(
-                      (removeItem) => removeItem.listItem != item.listItem
-                    )
+                    prev.filter((removeItem) => removeItem != item)
                   )
                 }
               />
             )}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item}
           />
           <View
             style={{
