@@ -65,23 +65,20 @@ export default function List() {
         end={{ x: 1, y: 1 }}
         style={styles.background}
       >
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1, justifyContent: 'space-between' }}>
           <View
             style={{
               flexDirection: 'row',
               gap: 10,
               justifyContent: 'center',
               alignItems: 'center',
-              marginTop: 20,
             }}
           >
             <UserInput onChangeText={handleChange} value={listItem} />
             {listItem && <Button title="Add" onPress={addToList} />}
           </View>
           <FlatList
-            style={{
-              flex: 1,
-            }}
+            style={{ marginBottom: 30 }}
             data={list}
             renderItem={({ item }) => (
               <ItemContainer
@@ -95,17 +92,20 @@ export default function List() {
             )}
             keyExtractor={(item) => item}
           />
-          <View
-            style={{
-              position: 'absolute',
-              bottom: 0,
-              left: 0,
-              borderWidth: 1,
-              width: '100%',
-            }}
-          >
-            <Button onPress={onModal} title="Submit List" />
-          </View>
+          {list.length > 0 && (
+            <View
+              style={{
+                width: '100%',
+                padding: 10,
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                backgroundColor: 'orange',
+              }}
+            >
+              <Button color="white" onPress={onModal} title="Submit List" />
+            </View>
+          )}
         </SafeAreaView>
       </LinearGradient>
       <Modal
