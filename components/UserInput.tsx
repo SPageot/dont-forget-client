@@ -1,6 +1,6 @@
-import { View, Text, TextInput } from 'react-native';
-import React from 'react';
-import { UserInputProp } from '@/types/user';
+import { View, Text, TextInput } from "react-native";
+import React from "react";
+import { UserInputProp } from "@/types/user";
 
 const UserInput: React.FC<UserInputProp> = ({
   value,
@@ -13,13 +13,14 @@ const UserInput: React.FC<UserInputProp> = ({
   labelColor,
   borderColor,
   inputFontColor,
+  placeholder,
 }) => {
   return (
     <View style={{ gap: 10 }}>
       {inputName && (
         <Text
           style={{
-            color: labelColor || '#0A1A2F',
+            color: labelColor || "#0A1A2F",
             fontSize: 20,
             fontWeight: 600,
           }}
@@ -28,6 +29,7 @@ const UserInput: React.FC<UserInputProp> = ({
         </Text>
       )}
       <TextInput
+        placeholder={placeholder}
         textContentType={textType}
         secureTextEntry={secureTextEntry}
         value={value}
@@ -36,10 +38,10 @@ const UserInput: React.FC<UserInputProp> = ({
         autoCapitalize={autoCapitalize}
         style={{
           borderWidth: 1,
-          borderColor: borderColor || '#0A1A2F',
+          borderColor: borderColor || "#0A1A2F",
           width: 300,
           height: 40,
-          color: inputFontColor || 'black',
+          color: inputFontColor || "black",
         }}
       />
     </View>

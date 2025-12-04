@@ -1,20 +1,20 @@
-import { FlatList, View, Button, Modal } from 'react-native';
-import React, { useState } from 'react';
-import { styles } from '@/styles/background';
-import { LinearGradient } from 'expo-linear-gradient';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import UserInput from '@/components/UserInput';
-import ItemContainer from '@/components/ItemContainer';
-import axios from 'axios';
-import { BASE_API } from '@/util/baseApi';
-import { useStore } from '@/store/store';
-import { Toast } from 'toastify-react-native';
+import { FlatList, View, Button, Modal, Text } from "react-native";
+import React, { useState } from "react";
+import { styles } from "@/styles/background";
+import { LinearGradient } from "expo-linear-gradient";
+import { SafeAreaView } from "react-native-safe-area-context";
+import UserInput from "@/components/UserInput";
+import ItemContainer from "@/components/ItemContainer";
+import axios from "axios";
+import { BASE_API } from "@/util/baseApi";
+import { useStore } from "@/store/store";
+import { Toast } from "toastify-react-native";
 
 export default function CreateList() {
-  const [listItem, setListItem] = useState('');
+  const [listItem, setListItem] = useState("");
   const [list, setList] = useState<string[]>([]);
   const [visible, setIsVisible] = useState(false);
-  const [listTitle, setListTitle] = useState('');
+  const [listTitle, setListTitle] = useState("");
   const user = useStore((state: any) => state.user);
 
   const handleChange = (text: string) => {
@@ -24,11 +24,11 @@ export default function CreateList() {
   const addToList = () => {
     if (listItem) {
       if (list.includes(listItem)) {
-        Toast.error('Item already in List', 'bottom');
+        Toast.error("Item already in List", "bottom");
         return;
       }
       setList((prev) => [...prev, listItem]);
-      setListItem('');
+      setListItem("");
     }
   };
 
@@ -49,8 +49,8 @@ export default function CreateList() {
       if (res.data) {
         setList([]);
         setIsVisible(false);
-        setListTitle('');
-        Toast.success('List Successfully Saved');
+        setListTitle("");
+        Toast.success("List Successfully Saved");
       }
     } catch (err) {
       console.log(err);
@@ -60,47 +60,67 @@ export default function CreateList() {
   return (
     <>
       <LinearGradient
-        colors={['#f5f7a1', '#ffd194', '#ff9a8b']}
+        colors={["#f5f7a1", "#ffd194", "#ff9a8b"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.background}
       >
-        <SafeAreaView style={{ flex: 1, justifyContent: 'space-between' }}>
+        <SafeAreaView style={{ flex: 1, justifyContent: "space-between" }}>
           <View
             style={{
-              flexDirection: 'row',
+              flexDirection: "row",
               gap: 10,
-              justifyContent: 'center',
-              alignItems: 'center',
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
-            <UserInput onChangeText={handleChange} value={listItem} />
+            <UserInput
+              placeholder="Add items here"
+              onChangeText={handleChange}
+              value={listItem}
+            />
             {listItem && <Button title="Add" onPress={addToList} />}
           </View>
-          <FlatList
-            style={{ marginBottom: 30 }}
-            data={list}
-            renderItem={({ item }) => (
-              <ItemContainer
-                listItem={item}
-                onRemovePress={() =>
-                  setList((prev) =>
-                    prev.filter((removeItem) => removeItem != item)
-                  )
-                }
-              />
-            )}
-            keyExtractor={(item) => item}
-          />
+          {list.length > 0 ? (
+            <FlatList
+              style={{ marginBottom: 30 }}
+              data={list}
+              renderItem={({ item }) => (
+                <ItemContainer
+                  listItem={item}
+                  onRemovePress={() =>
+                    setList((prev) =>
+                      prev.filter((removeItem) => removeItem != item)
+                    )
+                  }
+                />
+              )}
+              keyExtractor={(item) => item}
+            />
+          ) : (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={{ fontSize: 30, fontWeight: 200, fontStyle: "italic" }}
+              >
+                No Items In List
+              </Text>
+            </View>
+          )}
           {list.length > 0 && (
             <View
               style={{
-                width: '100%',
+                width: "100%",
                 padding: 10,
-                position: 'absolute',
+                position: "absolute",
                 bottom: 0,
                 left: 0,
-                backgroundColor: 'orange',
+                backgroundColor: "orange",
               }}
             >
               <Button color="white" onPress={onModal} title="Submit List" />
@@ -116,13 +136,13 @@ export default function CreateList() {
       >
         <View
           style={{
-            height: '100%',
-            width: '100%',
-            position: 'absolute',
-            justifyContent: 'center',
-            alignItems: 'center',
+            height: "100%",
+            width: "100%",
+            position: "absolute",
+            justifyContent: "center",
+            alignItems: "center",
             borderWidth: 1,
-            backgroundColor: 'rgba(0,0,0,0.9)',
+            backgroundColor: "rgba(0,0,0,0.9)",
           }}
         >
           <UserInput
@@ -133,7 +153,7 @@ export default function CreateList() {
             onChangeText={(text) => setListTitle(text)}
             value={listTitle}
           />
-          <View style={{ flexDirection: 'row' }}>
+          <View style={{ flexDirection: "row" }}>
             <Button title="Cancel" onPress={() => setIsVisible(!visible)} />
             <Button title="Submit List" onPress={onSubmitList} />
           </View>
