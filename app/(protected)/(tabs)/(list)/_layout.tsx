@@ -16,6 +16,10 @@ export default function ProtectedLayout() {
         name="modify"
         options={{ headerShown: false, animation: 'none' }}
       />
+       <Stack.Screen
+        name="listItems"
+        options={{ headerShown: false, animation: 'none' }}
+      />
     </Stack>
   );
 }

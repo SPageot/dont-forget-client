@@ -1,10 +1,7 @@
-import { FlatList, View, Button, Modal, Text } from "react-native";
 import React, { useState } from "react";
 import { styles } from "@/styles/background";
 import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
-import UserInput from "@/components/UserInput";
-import ItemContainer from "@/components/ItemContainer";
 import axios from "axios";
 import { BASE_API } from "@/util/baseApi";
 import { useStore } from "@/store/store";

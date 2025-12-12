@@ -1,54 +1,57 @@
-import { FlatList } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { styles } from '@/styles/background';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
 import { BASE_API } from '@/util/baseApi';
 import { useStore } from '@/store/store';
-import ItemContainer from '@/components/ItemContainer';
-import { ListProps } from '@/types/list';
+import List from '@/components/List';
 import { Toast } from 'toastify-react-native';
 import ListTitleModal from '@/components/ListTitleModal';
+import _ from "lodash"
 import { useRouter } from 'expo-router';
 
 export default function ModifyList() {
   const router = useRouter()
-  const [list, setList] = useState<{id:string, title:string}[] | []>([]);
-  const [listTitle, setListTitle] = useState("");
-  const [visible, setIsVisible] = useState(false);
   const user = useStore((state: any) => state.user);
   const userList = useStore((state: any) => state.userList);
   const userListItem = useStore((state: any) => state.userListItem);
-  const setUserList = useStore((state:any) => state.setUserList)
-  const setUserListItem = useStore((state:any) => state.setUserListItem)  
+  const setUserList = useStore((state:any) => state.setUserList) 
+  const [visible, setIsVisible] = useState(false); 
+  const [listTitle,setListTitle] = useState(userListItem.title)
+  const [listItem, setListItem] = useState("")
 
-  useEffect(() => {
-    const fetchList = async () => {
-      const res = await axios.get(`${BASE_API}/lists/${user._id}`);
-      if (res.data) {
-        setList(res.data.map((item:ListProps) => ({id:item._id, title:item.title})));
-      }
-    };
-
-    fetchList();
-  }, []);
-
-  
-  const getItem = async(listId:string) => {
-    const res = await axios.get(`${BASE_API}/lists/userList/${listId}`)
-    setUserListItem(res.data)
-    setUserList(res.data.listItems)
-    router.push("/listItems")
+  const handleChange = (text:string) => {
+    setListItem(text)
   }
 
+  const onModal = () => {
+    setIsVisible(!visible);
+  };
+
+  const addToList = () => {
+    if (listItem) {
+      if (userList.includes(listItem)) {
+        Toast.error("Item already in List", "bottom");
+        return;
+      }
+      setUserList([...userList, listItem]);
+    }
+  };
+
+  const onRemoveListItemPress = (item: string) =>
+    setUserList(
+      userList.filter((removeItem: string) => removeItem != item)
+    )
+  
+  
     const onUpdateList = async () => {
       if("_id" in userListItem){
       try {
         const res = await axios.put(`${BASE_API}/lists/${userListItem._id}`, {
           list: {
             userId: user._id,
-            title: userListItem.title,
+            title: listTitle,
             listItems: userList,
           },
         });
@@ -56,7 +59,8 @@ export default function ModifyList() {
         if (res.data) {
           setUserList([]);
           setIsVisible(false);
-          setListTitle("");
+          setListTitle("")
+          setListItem("")
           Toast.success("List Successfully Updated");
         }else{
           throw new Error("Error getting data from server, Please try again!")
@@ -69,7 +73,11 @@ export default function ModifyList() {
       }
     }
     };
-
+    
+if (_.isEmpty(userListItem) && _.isEmpty(userList)){
+    router.push("/modify")
+    return;
+}
   return (
     <>
     <LinearGradient
@@ -78,20 +86,13 @@ export default function ModifyList() {
       end={{ x: 1, y: 1 }}
       style={styles.background}
     >
-      <SafeAreaView>
-        <FlatList
-          data={list}
-          renderItem={({ item }:{item: {id:string, title:string}}) => (
-            <ItemContainer
-              listItem={item.title}
-              onModifyPress={() => getItem(item.id)}
-            />
-          )}
-          keyExtractor={(item) => item.id}
-        />
+      <SafeAreaView style={{flex:1}}>
+        <List handleListItemChange={handleChange} listItem={listItem} list={userList} onAddToList={addToList} onRemoveListItemPress={onRemoveListItemPress} onModal={onModal}  />
       </SafeAreaView>
     </LinearGradient>
     <ListTitleModal visible={visible} listTitle={listTitle} onRequestClose={() => setIsVisible(!visible)} onChangeTitleText={(text) => setListTitle(text)} onCancelPress={() => setIsVisible(!visible)} onSubmitList={onUpdateList} />
     </>
   );
 }
+
+
