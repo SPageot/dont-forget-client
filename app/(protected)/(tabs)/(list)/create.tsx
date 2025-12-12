@@ -37,6 +37,9 @@ export default function CreateList() {
 
   const onSubmitList = async () => {
     try {
+      if (!listTitle){
+      throw new Error("List title is required")
+      }
       const res = await axios.post(`${BASE_API}/lists/create`, {
         list: {
           userId: user._id,
@@ -52,7 +55,9 @@ export default function CreateList() {
         Toast.success("List Successfully Saved");
       }
     } catch (err) {
-      console.log(err);
+      if(err instanceof Error){
+        Toast.error(err.message);
+      }
     }
   };
 
@@ -68,11 +73,25 @@ export default function CreateList() {
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.background}
-      ><SafeAreaView style={{ flex: 1, justifyContent: "space-between" }}>
-        <List handleListItemChange={handleChange} listItem={listItem} list={list} onAddToList={addToList} onRemoveListItemPress={onRemoveListItemPress} onModal={onModal} />
-        </SafeAreaView>
+      >
+      <SafeAreaView style={{ flex: 1, justifyContent: "space-between" }}>
+        <List 
+          handleListItemChange={handleChange} 
+          listItem={listItem} 
+          list={list} 
+          onAddToList={addToList} 
+          onRemoveListItemPress={onRemoveListItemPress} 
+          onModal={onModal} />
+      </SafeAreaView>
       </LinearGradient>
-      <ListTitleModal visible={visible} listTitle={listTitle} onRequestClose={() => setIsVisible(!visible)} onChangeTitleText={(text) => setListTitle(text)} onCancelPress={() => setIsVisible(!visible)} onSubmitList={onSubmitList} />
+        <ListTitleModal 
+          visible={visible} 
+          listTitle={listTitle} 
+          onRequestClose={() => setIsVisible(!visible)} 
+          onChangeTitleText={(text) => setListTitle(text)} 
+          onCancelPress={() => setIsVisible(!visible)} 
+          onSubmitList={onSubmitList} 
+        />
     </>
   );
 }

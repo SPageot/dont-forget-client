@@ -1,4 +1,4 @@
-import { FlatList, Text, View } from 'react-native';
+import { Button, FlatList, Text, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { styles } from '@/styles/background';
@@ -11,6 +11,7 @@ import { ListProps } from '@/types/list';
 import { Toast } from 'toastify-react-native';
 import ListTitleModal from '@/components/ListTitleModal';
 import { useRouter } from 'expo-router';
+import _ from 'lodash';
 
 export default function ModifyList() {
   const router = useRouter()
@@ -84,8 +85,8 @@ export default function ModifyList() {
       end={{ x: 1, y: 1 }}
       style={styles.background}
     >
-      <SafeAreaView>
-        <FlatList
+      <SafeAreaView style={_.isEmpty(list) && {flex:1}}>
+        {_.isEmpty(list) ?<View style={{flex: 1, justifyContent:"center", alignItems:"center"}}><Text style={{fontSize:30, fontWeight:200, fontStyle:"italic"}}>No list to modify</Text><Button title='Create' onPress={() => router.push("/create")}/></View>:<FlatList
           data={list}
           renderItem={({ item }:{item: {id:string, title:string}}) => (
               <ItemContainer
@@ -95,7 +96,7 @@ export default function ModifyList() {
             />
           )}
           keyExtractor={(item) => item.id}
-        />
+        />}
       </SafeAreaView>
     </LinearGradient>
     <ListTitleModal visible={visible} listTitle={listTitle} onRequestClose={() => setIsVisible(!visible)} onChangeTitleText={(text) => setListTitle(text)} onCancelPress={() => setIsVisible(!visible)} onSubmitList={onUpdateList} />
