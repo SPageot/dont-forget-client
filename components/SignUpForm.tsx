@@ -42,12 +42,13 @@ const SignUpForm = () => {
         router.push('/login');
       }
     } catch (err) {
-      console.log(err)
       if(err instanceof AxiosError){
         Toast.error(err.response?.data)
+        return 
       }
       if(err instanceof Error){
         Toast.error(err.message)
+        return 
       }
     }
   };
