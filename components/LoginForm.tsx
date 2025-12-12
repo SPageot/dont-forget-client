@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { router } from 'expo-router';
 import UserInput from './UserInput';
 import FormContainer from './FormContainer';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { BASE_API } from '@/util/baseApi';
 import { useStore } from '@/store/store';
 import { Toast } from 'toastify-react-native';
@@ -25,15 +25,19 @@ const LoginForm = () => {
         username,
         password,
       });
-
       if (res.data) {
         setUser(res.data);
         setIsLoggedIn(true);
         router.replace('/');
       }
     } catch (err) {
+      if(err instanceof AxiosError){
+        Toast.error(err.response?.data)
+        return;
+      }
       if(err instanceof Error){
       Toast.error(err.message);
+      return;
       }
     }
   };
