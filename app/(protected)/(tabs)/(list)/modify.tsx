@@ -1,4 +1,4 @@
-import { FlatList } from 'react-native';
+import { FlatList, Text, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { styles } from '@/styles/background';
@@ -30,11 +30,10 @@ export default function ModifyList() {
         setList(res.data.map((item:ListProps) => ({id:item._id, title:item.title})));
       }
     };
-
     fetchList();
   }, []);
 
-  
+ 
   const getItem = async(listId:string) => {
     const res = await axios.get(`${BASE_API}/lists/userList/${listId}`)
     setUserListItem(res.data)
@@ -70,6 +69,13 @@ export default function ModifyList() {
     }
     };
 
+    const onDeleteItem = async(id:any ) => {
+      const res = await axios.delete(`${BASE_API}/lists/${id}`)
+      if(res.data){
+      router.push("/modify")
+      }
+    }
+
   return (
     <>
     <LinearGradient
@@ -82,9 +88,10 @@ export default function ModifyList() {
         <FlatList
           data={list}
           renderItem={({ item }:{item: {id:string, title:string}}) => (
-            <ItemContainer
+              <ItemContainer
               listItem={item.title}
               onModifyPress={() => getItem(item.id)}
+              onRemovePress={() => onDeleteItem(item.id)}
             />
           )}
           keyExtractor={(item) => item.id}

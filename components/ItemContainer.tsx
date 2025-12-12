@@ -1,5 +1,6 @@
 import { View, Text, Pressable } from 'react-native';
 import React from 'react';
+import EvilIcons from '@expo/vector-icons/EvilIcons';
 
 export default function ItemContainer({
   listItem,
@@ -28,7 +29,7 @@ export default function ItemContainer({
     >
       <Text style={{ fontSize: 20, fontWeight: '700' }}>{listItem}</Text>
       {onRemovePress &&<Pressable onPress={onRemovePress}>
-        <Text>X</Text>
+      <EvilIcons name="trash" size={24} color="black" />
       </Pressable>}
     </Pressable>
   );
