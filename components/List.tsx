@@ -1,6 +1,5 @@
 import { View, Text, Button, FlatList } from 'react-native'
 import React from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import UserInput from './UserInput'
 import ItemContainer from './ItemContainer'
 import { UserListProps } from '@/types/list'

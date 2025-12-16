@@ -1,6 +1,7 @@
 import { Tabs } from 'expo-router';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 export default function ProtectedLayout() {
   return (
@@ -32,6 +33,18 @@ export default function ProtectedLayout() {
         options={{
           href: null,
           headerShown: false,
+        }}
+      />
+      <Tabs.Screen
+        name="recipes"
+        options={{
+          headerShown: false,
+          title: 'Recipes',
+          tabBarIcon: ({ color, size }) => {
+            return (
+              <MaterialCommunityIcons name="food" size={size} color={color} />
+            );
+          },
         }}
       />
     </Tabs>

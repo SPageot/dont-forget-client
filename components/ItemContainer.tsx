@@ -1,16 +1,19 @@
 import { View, Text, Pressable } from 'react-native';
 import React from 'react';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
+import Entypo from '@expo/vector-icons/Entypo';
 
 export default function ItemContainer({
   listItem,
   onRemovePress,
-  onModifyPress
+  onModifyPress,
+  onAddToListPress
 
 }: {
   listItem: string;
   onRemovePress?: () => void;
   onModifyPress?:() => void;
+  onAddToListPress?:() => void;
 }) {
   return (
     <Pressable
@@ -31,6 +34,7 @@ export default function ItemContainer({
       {onRemovePress &&<Pressable onPress={onRemovePress}>
       <EvilIcons name="trash" size={24} color="black" />
       </Pressable>}
+      {onAddToListPress && <Entypo name="add-to-list" size={24} color="black" />}
     </Pressable>
   );
 }
