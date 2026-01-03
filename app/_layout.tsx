@@ -1,10 +1,14 @@
-import { Stack, Tabs } from "expo-router";
-import GradientBackground from "@/component/GradientBackground";
+import { Tabs } from "expo-router";
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
+
 
 export default function TabLayout() {
   return (
-    <Tabs>
-      <Tabs.Screen name="index" options={{ title: "Home", headerShown: false }} />
-    </Tabs>
+    <GestureHandlerRootView>
+      <Tabs>
+        <Tabs.Screen name="index" options={{ title: "Home", headerShown: false }} />
+      </Tabs>
+    </GestureHandlerRootView>
   )
 }

@@ -7,12 +7,18 @@ import { Button, Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Feather from '@expo/vector-icons/Feather';
 import GroceryTitleModal from "@/component/GroceryTitleModal";
+import axios from 'axios'
+import ViewGroceryListModal from "@/component/ViewGroceryListModal";
+import { GroceryItemProps, GroceryListProps } from "@/types/ListTypes";
+import { BASE_URL } from "@/util/misc";
 
 export default function Index() {
   const [groceryList, setGroceryList] = useState(mockList)
   const [openModal, setOpenModal] = useState(false)
   const [userInput, setUserInput] = useState("")
   const [titleText, setTitleText] = useState("");
+  const [openList, setOpenList] = useState(false);
+  const userId = "12ed2d2"
 
   const handleSubtractQuantity = (name: string) => {
     setGroceryList(prev => prev.map(item => item.name == name ? { ...item, quantity: Math.max(0, item.quantity - 1) } : item).filter(item => item.quantity > 0))
@@ -38,9 +44,32 @@ export default function Index() {
     setTitleText(text)
   }
 
-  const handleSubmitClick = () => {
+  const handleSubmitClick = async () => {
+    const response = await axios.post(`${BASE_URL}/lists/create`, {
+      list: {
+        userId,
+        title: titleText,
+        listItems: groceryList,
+      }
 
+    })
+    const list = await response.data
   }
+
+  const handleViewGroceryModal = () => {
+    setOpenList(true)
+  }
+
+  const handleCloseViewGroceryModal = () => {
+    setOpenList(false)
+  }
+
+  const handleModifyClick = async (item: GroceryListProps) => {
+    const res = await axios.get(`${BASE_URL}/lists/userList/${item._id}`)
+    setGroceryList(res.data.listItems)
+    setOpenList(false)
+  }
+
   return (
     <>
       <GradientBackground>
@@ -67,20 +96,22 @@ export default function Index() {
               </Text>
             </View>
           }
-          {groceryList.length > 0 &&
-            <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", padding: 20, gap: 10 }}>
-              <Button mode="outlined" onPress={handleOpenClick}>
-                <Text>Submit List</Text>
-              </Button>
-              <Button mode="outlined" onPress={() => setGroceryList([])}>
-                <Text>Clear List</Text>
-              </Button>
-            </View>
-          }
+
+          <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", padding: 20, gap: 10 }}>
+            {groceryList.length > 0 && <Button mode="outlined" onPress={handleOpenClick}>
+              <Text>Submit List</Text>
+            </Button>}
+            <Button mode="outlined" onPress={handleViewGroceryModal}>
+              <Text>View List</Text>
+            </Button>
+            {groceryList.length > 0 && <Button mode="outlined" onPress={() => setGroceryList([])}>
+              <Text>Clear List</Text>
+            </Button>}
+          </View>
         </SafeAreaView>
       </GradientBackground>
       <GroceryTitleModal visible={openModal} handleCloseClick={handleCloseClick} titleText={titleText} onChangeTitleText={onChangeTitleText} handleSubmitClick={handleSubmitClick} />
+      <ViewGroceryListModal visible={openList} handleCloseClick={handleCloseViewGroceryModal} handleModifyClick={handleModifyClick} userId={userId} />
     </>
-
   );
 }

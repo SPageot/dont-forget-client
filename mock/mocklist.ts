@@ -1,8 +1,8 @@
-import { GroceryItem } from "@/types/ListTypes";
+import { GroceryItemProps } from "@/types/ListTypes";
 
 
 
-export const mockList: GroceryItem[] = [
+export const mockList: GroceryItemProps[] = [
     {
         name: "Apple",
         quantity: 1,

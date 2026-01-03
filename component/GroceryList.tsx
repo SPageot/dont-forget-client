@@ -2,16 +2,16 @@ import { FlatList, View } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Button, List, Text } from 'react-native-paper';
-import { GroceryItem } from '@/types/ListTypes';
+import { GroceryItemProps } from '@/types/ListTypes';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
 
-export default function GroceryList({ groceryList, handleSubtractQuantity, handleAddQuantity }: { groceryList: GroceryItem[], handleSubtractQuantity: (name: string) => void, handleAddQuantity: (name: string) => void }) {
+export default function GroceryList({ groceryList, handleSubtractQuantity, handleAddQuantity }: { groceryList: GroceryItemProps[], handleSubtractQuantity: (name: string) => void, handleAddQuantity: (name: string) => void }) {
   return (
     <FlatList
       data={groceryList}
       renderItem={({ item }) =>
-        <Button mode="outlined">
+        <Button mode="outlined" style={{ width: "95%" }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '90%', padding: 5, gap: 5 }}>
             <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{item.name}</Text>
             <View style={{ flexDirection: 'row', gap: 20, alignItems: 'center' }}>
@@ -22,7 +22,7 @@ export default function GroceryList({ groceryList, handleSubtractQuantity, handl
           </View>
         </Button>}
       keyExtractor={(item) => item.name}
-      contentContainerStyle={{ gap: 15 }}
+      contentContainerStyle={{ gap: 15, alignItems: "center" }}
     />
   )
 }

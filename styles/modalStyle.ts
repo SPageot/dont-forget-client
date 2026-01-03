@@ -13,4 +13,11 @@ export const styles = StyleSheet.create({
       borderRadius: 12,
       width: '80%',
     },
+    viewModal: {
+        backgroundColor: '#fff',
+        borderRadius: 12,
+        width: '90%',
+        height:"80%",
+        padding:20,
+    }
   });
