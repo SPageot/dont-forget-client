@@ -1,7 +1,7 @@
 import GradientBackground from "@/component/GradientBackground";
 import GroceryList from "@/component/GroceryList";
 import { mockList } from "@/mock/mocklist";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View, TextInput } from "react-native";
 import { Button, Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -18,6 +18,8 @@ export default function Index() {
   const [userInput, setUserInput] = useState("")
   const [titleText, setTitleText] = useState("");
   const [openList, setOpenList] = useState(false);
+  const [isModifying, setIsModifying] = useState(false)
+  const [userGroceryList, setUserGroceryList] = useState<GroceryListProps>()
   const userId = "12ed2d2"
 
   const handleSubtractQuantity = (name: string) => {
@@ -56,6 +58,29 @@ export default function Index() {
     const list = await response.data
   }
 
+  const handleUpdateClick = async () => {
+    try {
+      const response = await axios.put(`${BASE_URL}/lists/${userGroceryList?._id}`, {
+        list: {
+          userId: userGroceryList?.userId,
+          title: titleText,
+          listItems: groceryList,
+        }
+      })
+      if (response.data) {
+        console.log("Successfully Updated")
+        setGroceryList([])
+        setIsModifying(false)
+        setTitleText("")
+        setUserGroceryList(undefined)
+        setOpenModal(false)
+      }
+    } catch (err) {
+      console.log(err)
+    }
+
+  }
+
   const handleViewGroceryModal = () => {
     setOpenList(true)
   }
@@ -66,6 +91,7 @@ export default function Index() {
 
   const handleModifyClick = async (item: GroceryListProps) => {
     const res = await axios.get(`${BASE_URL}/lists/userList/${item._id}`)
+    setUserGroceryList(res.data)
     setGroceryList(res.data.listItems)
     setTitleText(res.data.title)
     setOpenList(false)
@@ -122,7 +148,7 @@ export default function Index() {
           </View>
         </SafeAreaView>
       </GradientBackground>
-      <GroceryTitleModal visible={openModal} handleCloseClick={handleCloseClick} titleText={titleText} onChangeTitleText={onChangeTitleText} handleSubmitClick={handleSubmitClick} />
+      <GroceryTitleModal visible={openModal} handleCloseClick={handleCloseClick} titleText={titleText} onChangeTitleText={onChangeTitleText} handleSubmitClick={isModifying ? handleSubmitClick : handleUpdateClick} />
       <ViewGroceryListModal visible={openList} handleCloseClick={handleCloseViewGroceryModal} handleModifyClick={handleModifyClick} userId={userId} />
     </>
   );
