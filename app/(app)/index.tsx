@@ -1,3 +1,4 @@
+import _ from "lodash";
 import GradientBackground from "@/component/GradientBackground";
 import GroceryList from "@/component/GroceryList";
 import { mockList } from "@/mock/mocklist";
@@ -11,8 +12,12 @@ import axios from 'axios'
 import ViewGroceryListModal from "@/component/ViewGroceryListModal";
 import { GroceryItemProps, GroceryListProps } from "@/types/ListTypes";
 import { BASE_URL } from "@/util/misc";
+import { useSelector } from "react-redux";
+import { useRouter } from "expo-router";
+import { RootState } from "@/store/store";
 
 export default function Index() {
+  const user = useSelector((state: RootState) => state.users)
   const [groceryList, setGroceryList] = useState(mockList)
   const [openModal, setOpenModal] = useState(false)
   const [userInput, setUserInput] = useState("")
@@ -20,7 +25,8 @@ export default function Index() {
   const [openList, setOpenList] = useState(false);
   const [isModifying, setIsModifying] = useState(false)
   const [userGroceryList, setUserGroceryList] = useState<GroceryListProps>()
-  const userId = "12ed2d2"
+
+
 
   const handleSubtractQuantity = (name: string) => {
     setGroceryList(prev => prev.map(item => item.name == name ? { ...item, quantity: Math.max(0, item.quantity - 1) } : item).filter(item => item.quantity > 0))
@@ -30,7 +36,7 @@ export default function Index() {
   }
 
   const handleAddClick = () => {
-    setGroceryList(prev => [...prev, { name: userInput, quantity: 1, isCompleted: false }])
+    setGroceryList(prev => [...prev, { name: userInput, quantity: 1, is_completed: false }])
     setUserInput("")
   }
 
@@ -47,28 +53,30 @@ export default function Index() {
   }
 
   const handleSubmitClick = async () => {
-    const response = await axios.post(`${BASE_URL}/lists/create`, {
-      list: {
-        userId,
-        title: titleText,
-        listItems: groceryList,
-      }
-
+    const response = await axios.post(`${BASE_URL}/list/create`, {
+      user_id: user._id,
+      title: titleText,
+      list_items: groceryList,
     })
-    const list = await response.data
+    const list = await response.data;
+
+    if (list) {
+      setGroceryList([])
+      setUserGroceryList(undefined)
+      setTitleText("")
+      setOpenModal(false)
+    }
   }
 
   const handleUpdateClick = async () => {
     try {
-      const response = await axios.put(`${BASE_URL}/lists/${userGroceryList?._id}`, {
-        list: {
-          userId: userGroceryList?.userId,
-          title: titleText,
-          listItems: groceryList,
-        }
+
+      const response = await axios.put(`${BASE_URL}/list?id=${userGroceryList?._id}`, {
+        user_id: userGroceryList?.user_id,
+        title: titleText,
+        list_items: groceryList,
       })
       if (response.data) {
-        console.log("Successfully Updated")
         setGroceryList([])
         setIsModifying(false)
         setTitleText("")
@@ -90,15 +98,15 @@ export default function Index() {
   }
 
   const handleModifyClick = async (item: GroceryListProps) => {
-    const res = await axios.get(`${BASE_URL}/lists/userList/${item._id}`)
+    const res = await axios.get(`${BASE_URL}/list?id=${item._id}`)
     setUserGroceryList(res.data)
-    setGroceryList(res.data.listItems)
+    setGroceryList(res.data.list_items)
     setTitleText(res.data.title)
     setOpenList(false)
   }
 
   const handleSelectedItem = (item: GroceryItemProps) => {
-    setGroceryList(prev => prev.map(prevItem => prevItem.name == item.name ? { ...prevItem, isCompleted: !prevItem.isCompleted } : prevItem))
+    setGroceryList(prev => prev.map(prevItem => prevItem.name == item.name ? { ...prevItem, isCompleted: !prevItem.is_completed } : prevItem))
   }
 
   const handleDeleteItem = (item: GroceryItemProps) => {
@@ -148,8 +156,8 @@ export default function Index() {
           </View>
         </SafeAreaView>
       </GradientBackground>
-      <GroceryTitleModal visible={openModal} handleCloseClick={handleCloseClick} titleText={titleText} onChangeTitleText={onChangeTitleText} handleSubmitClick={isModifying ? handleSubmitClick : handleUpdateClick} />
-      <ViewGroceryListModal visible={openList} handleCloseClick={handleCloseViewGroceryModal} handleModifyClick={handleModifyClick} userId={userId} />
+      <GroceryTitleModal visible={openModal} handleCloseClick={handleCloseClick} titleText={titleText} onChangeTitleText={onChangeTitleText} handleSubmitClick={!isModifying ? handleSubmitClick : handleUpdateClick} />
+      <ViewGroceryListModal visible={openList} handleCloseClick={handleCloseViewGroceryModal} handleModifyClick={handleModifyClick} userId={user._id} />
     </>
   );
 }

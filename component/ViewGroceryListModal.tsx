@@ -15,11 +15,12 @@ import Feather from '@expo/vector-icons/Feather';
 const ViewGroceryListModal = ({ visible, handleCloseClick, handleModifyClick, userId }: { visible: boolean, handleCloseClick: () => void, handleModifyClick: (item: GroceryListProps) => Promise<void>, userId: string }) => {
     const [groceryList, setGroceryList] = useState<any[]>([])
 
-    const fetchUserGroceryList = async () => {
-        const res = await axios.get(`${BASE_URL}/lists/${userId}`)
-        setGroceryList(res.data)
-    }
+
     useEffect(() => {
+        const fetchUserGroceryList = async () => {
+            const res = await axios.get(`${BASE_URL}/list/all?id=${userId}`)
+            setGroceryList(res.data)
+        }
         fetchUserGroceryList()
     }, [])
 
@@ -27,7 +28,7 @@ const ViewGroceryListModal = ({ visible, handleCloseClick, handleModifyClick, us
         const prevGroceryList = groceryList
         setGroceryList(prev => prev.filter(prevItem => prevItem.title != item.title))
         try {
-            const res = await axios.delete(`${BASE_URL}/lists/${item._id}`)
+            const res = await axios.delete(`${BASE_URL}/list?id=${item._id}`)
             console.log(res.data)
         } catch (err) {
             console.log(err)
@@ -68,6 +69,7 @@ const ViewGroceryListModal = ({ visible, handleCloseClick, handleModifyClick, us
                     {groceryList.length > 0 ? <FlatList
                         data={groceryList}
                         renderItem={({ item }) => {
+                            console.log(item)
                             return <ReanimatedSwipeable
                                 friction={1}
                                 enableTrackpadTwoFingerGesture

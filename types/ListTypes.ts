@@ -2,12 +2,12 @@
 export interface GroceryItemProps {
     name: string;
     quantity: number;
-    isCompleted: boolean
+    is_completed: boolean
 }
 
 export interface GroceryListProps {
     _id?: string,
-    userId: string,
+    user_id: string,
     title: string,
-    listItems: [GroceryItemProps],
+    list_items: GroceryItemProps[],
 }

@@ -6,16 +6,16 @@ export const mockList: GroceryItemProps[] = [
     {
         name: "Apple",
         quantity: 1,
-        isCompleted:false
+        is_completed:false
     },
     {
         name: "Banana",
         quantity: 2,
-        isCompleted:false
+        is_completed:false
     },
     {
         name: "Orange",
         quantity: 3,
-        isCompleted:false
+        is_completed:false
     }
 ]

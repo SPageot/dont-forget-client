@@ -1,14 +1,15 @@
-import { Tabs } from "expo-router";
+import { Stack } from "expo-router";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { store } from "../store/store"
+import { Provider } from 'react-redux'
 
 
-
-export default function TabLayout() {
+export default function RootLayout() {
   return (
     <GestureHandlerRootView>
-      <Tabs>
-        <Tabs.Screen name="index" options={{ title: "Home", headerShown: false }} />
-      </Tabs>
+      <Provider store={store}>
+        <Stack screenOptions={{ headerShown: false }} />
+      </Provider>
     </GestureHandlerRootView>
   )
 }
