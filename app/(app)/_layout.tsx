@@ -1,6 +1,7 @@
 import { RootState } from "@/store/store";
-import { Redirect, Slot } from "expo-router";
+import { Redirect, Slot, Tabs } from "expo-router";
 import { useSelector } from "react-redux";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function AppLayout() {
     const user = useSelector((state: RootState) => state.users)
@@ -8,5 +9,13 @@ export default function AppLayout() {
         return <Redirect href="/login" />;
     }
 
-    return <Slot />;
+    return <Tabs screenOptions={{
+        headerShown: false
+    }}>
+        <Tabs.Screen name="index" options={{
+            title: "Home", tabBarIcon: ({ color, size }) => (
+                <Ionicons name="home-outline" color={color} size={size} />
+            )
+        }} />
+    </Tabs>;
 }
