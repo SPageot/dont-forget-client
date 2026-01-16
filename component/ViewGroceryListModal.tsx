@@ -28,8 +28,7 @@ const ViewGroceryListModal = ({ visible, handleCloseClick, handleModifyClick, us
         const prevGroceryList = groceryList
         setGroceryList(prev => prev.filter(prevItem => prevItem.title != item.title))
         try {
-            const res = await axios.delete(`${BASE_URL}/list?id=${item._id}`)
-            console.log(res.data)
+            await axios.delete(`${BASE_URL}/list?id=${item._id}`)
         } catch (err) {
             console.log(err)
             setGroceryList(prevGroceryList)
@@ -69,7 +68,6 @@ const ViewGroceryListModal = ({ visible, handleCloseClick, handleModifyClick, us
                     {groceryList.length > 0 ? <FlatList
                         data={groceryList}
                         renderItem={({ item }) => {
-                            console.log(item)
                             return <ReanimatedSwipeable
                                 friction={1}
                                 enableTrackpadTwoFingerGesture
@@ -79,7 +77,7 @@ const ViewGroceryListModal = ({ visible, handleCloseClick, handleModifyClick, us
                                 </Button>
                             </ReanimatedSwipeable>
                         }}
-                        contentContainerStyle={{ padding: 10 }}
+                        contentContainerStyle={{ padding: 10, gap: 10 }}
                     /> : <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}><Text style={{ fontSize: 24, fontWeight: 200, fontStyle: "italic" }}>No List</Text></View>}
                     <View style={{ flexDirection: "row", justifyContent: "space-evenly", alignItems: "center" }}>
                         <Button mode="outlined" onPress={handleCloseClick}>
