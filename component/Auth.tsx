@@ -22,17 +22,6 @@ export default function Auth() {
                 setUser(userDetails)
                 return;
             }
-            if (!user.password || !user.username) {
-                Toast.show({
-                    type: "error",
-                    text1: "Login Error",
-                    text1Style: { fontSize: 10 },
-                    text2: "Username/Password is required",
-                    text2Style: { fontSize: 20, color: "red", fontWeight: 500 }
-                })
-                return;
-            }
-
             const res = await axios.post(`${BASE_URL}/user/login`, { username: user.username, password: user.password })
             const data = res.data
             if (data) {
@@ -59,30 +48,27 @@ export default function Auth() {
                 setUser(userDetails)
                 return;
             }
-            if (Object.values(user).some(detail => detail === "")) {
-                Toast.show({
-                    type: 'error',
-                    text1: "Register Error",
-                    text1Style: { fontSize: 10 },
-                    text2: "All Fields Are Required",
-                    text2Style: { fontSize: 20, color: "red", fontWeight: 500 }
-                })
-                return;
-            }
             const res = await axios.post(`${BASE_URL}/user/create`, user)
             const data = res.data
             if (data) {
                 setIsRegistering(false)
+                Toast.show({
+                    type: 'success',
+                    text1: "Register Error",
+                    text1Style: { fontSize: 10 },
+                    text2: res.data.message,
+                    text2Style: { fontSize: 15, color: "green", fontWeight: 500 }
+                })
                 setUser(userDetails)
             }
         } catch (err) {
             if (err instanceof AxiosError) {
                 Toast.show({
                     type: 'error',
-                    text1: "Register Error",
+                    text1: "Register Success",
                     text1Style: { fontSize: 10 },
                     text2: err.response?.data.detail,
-                    text2Style: { fontSize: 20, color: "red", fontWeight: 500 }
+                    text2Style: { fontSize: 15, color: "red", fontWeight: 500 }
                 })
             }
         }
