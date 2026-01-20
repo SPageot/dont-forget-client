@@ -1,10 +1,10 @@
 import { View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Button, TextInput, Text } from 'react-native-paper'
 import { UserDetailsType } from '@/types/userTypes';
 import axios, { AxiosError } from 'axios';
 import { BASE_URL, userDetails } from '@/util/misc';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { addUser } from '@/features/userSlice';
 import { useRouter } from 'expo-router';
 import Toast from 'react-native-toast-message';
@@ -107,7 +107,7 @@ export default function Auth() {
             </View>
             <View>
                 <Text variant="labelLarge">Password</Text>
-                <TextInput mode='outlined' style={{ backgroundColor: "none" }} onChangeText={(text: string) => onChangeUserDetails(text, "password")} value={user.password} />
+                <TextInput secureTextEntry={true} mode='outlined' style={{ backgroundColor: "none" }} onChangeText={(text: string) => onChangeUserDetails(text, "password")} value={user.password} />
             </View>
             {isRegistering && <>
                 <View>

@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "grocery-companion",
-    "slug": "grocery-companion",
+    "name": "Don't Forget",
+    "slug": "dont-forget",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "grocerycompanion",
+    "icon": "./assets/images/df-icon.png",
+    "scheme": "dontforget",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -30,7 +30,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/df-splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff",
