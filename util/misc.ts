@@ -1,7 +1,7 @@
 import { GroceryListProps } from "@/types/ListTypes"
 import { UserDBType, UserDetailsType } from "@/types/userTypes"
 
-const DEV = false
+const DEV = true
 
 export const BASE_URL = DEV ?  process.env.EXPO_PUBLIC_API_URL : process.env.EXPO_PUBLIC_PROD_API_URL
 

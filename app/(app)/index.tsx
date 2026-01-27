@@ -8,7 +8,7 @@ import { Button, Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Feather from '@expo/vector-icons/Feather';
 import GroceryTitleModal from "@/component/GroceryTitleModal";
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 import ViewGroceryListModal from "@/component/ViewGroceryListModal";
 import { GroceryItemProps, GroceryListProps } from "@/types/ListTypes";
 import { BASE_URL } from "@/util/misc";
@@ -38,6 +38,18 @@ export default function Index() {
   }
 
   const handleAddClick = () => {
+
+    if (!userInput.trim()) {
+      Toast.show({
+        type: 'error',
+        text1: "List Item Error",
+        text1Style: { fontSize: 10 },
+        text2: "Item cannot be blank",
+        text2Style: { fontSize: 20, color: "red", fontWeight: 300 }
+      })
+      return;
+    }
+
     const checkForDup = groceryList.filter(listDetails => listDetails.name.toLowerCase() == userInput.toLowerCase());
     if (checkForDup.length === 0) {
       setGroceryList(prev => [...prev, { name: userInput, quantity: 1, is_completed: false }])
@@ -67,20 +79,41 @@ export default function Index() {
   }
 
   const handleSubmitClick = async () => {
-    const response = await axios.post(`${BASE_URL}/list/create`, {
-      user_id: user._id,
-      title: titleText,
-      list_items: groceryList,
-    })
-    const list = await response.data;
+    try {
+      const response = await axios.post(`${BASE_URL}/list/create`, {
+        user_id: user._id,
+        title: titleText,
+        list_items: groceryList,
+      })
+      const list = await response.data;
 
-    if (list) {
-      setGroceryList([])
-      setUserGroceryList(undefined)
-      setTitleText("")
-      setOpenModal(false)
-      dispatch(addList({ user_id: user._id, title: titleText, list_items: groceryList }))
+      if (list) {
+        Toast.show({
+          type: 'success',
+          text1: "List Success",
+          text1Style: { fontSize: 10 },
+          text2: "List Saved",
+          text2Style: { fontSize: 20, color: "green", fontWeight: 300 }
+        })
+        setGroceryList([])
+        setUserGroceryList(undefined)
+        setTitleText("")
+        setOpenModal(false)
+        dispatch(addList({ user_id: user._id, title: titleText, list_items: groceryList }))
+      }
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        Toast.show({
+          type: 'error',
+          text1: "Login Error",
+          text1Style: { fontSize: 10 },
+          text2: err.response?.data.detail,
+          text2Style: { fontSize: 20, color: "red", fontWeight: 300 }
+        })
+      }
+
     }
+
   }
 
   const handleUpdateClick = async () => {
